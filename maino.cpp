@@ -6,11 +6,16 @@
 #include "vector"
 #include "cassert"
 #include "iostream"
-
 #include <opencv2/opencv.hpp>
 
-int main() {
-
+int main(int argc, char *argv[]) {
+    const char *pathArg;
+    if (argc != 2) {
+        std::cout << "Provide path to image as only argument" << std::endl;
+        return -1;
+    } else {
+        pathArg = argv[1];
+    }
     SiftGPU sift_gpu;
 //    std::vector<char *> siftGpuArgsStrings = {"-fo", "-1", "-v", "1"}; // works fine
     std::vector<char *> siftGpuArgsStrings = {"-cuda", "0", "-fo", "-1", "-v", "1"}; // give cuda error ?
@@ -19,19 +24,18 @@ int main() {
 //    for (int i = 0; i < siftGpuArgsStrings.size(); ++i) {
 //        siftGpuArgs.push_back(siftGpuArgsStrings[i].data());
 //    }
-    char** data = siftGpuArgsStrings.data();
+    char **data = siftGpuArgsStrings.data();
 //    sift_gpu.CreateContextGL();
     sift_gpu.ParseParam(siftGpuArgsStrings.size(), siftGpuArgsStrings.data());
     assert(sift_gpu.VerifyContextGL() == sift_gpu.SIFTGPU_FULL_SUPPORTED);
     std::string path = "/home/leo/Desktop/1305031453.059754.png";
-    const char* pathData = path.data();
-    sift_gpu.RunSIFT(pathData);
+    const char *pathData = path.data();
+    sift_gpu.RunSIFT(pathArg);
 
 
 //  SiftMatchGPU sift_match_gpu;
 
     std::cout << "hello!" << std::endl;
-
 
 
     int num1 = sift_gpu.GetFeatureNum();
@@ -44,7 +48,6 @@ int main() {
 
     cv::Mat imageNoKeyPoint = cv::imread(pathToRGBImage, cv::IMREAD_COLOR);
     std::vector<cv::KeyPoint> keyPointsToShow;
-
 
 
     cv::Mat imageWithKeyPoint = cv::imread(pathToRGBImage, cv::IMREAD_COLOR);
